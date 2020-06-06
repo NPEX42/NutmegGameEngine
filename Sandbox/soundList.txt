@@ -1,0 +1,2 @@
+res/audio/sfx/coin.wav,sfx_Coin
+res/audio/sfx/hover.wav,sfx_Hover
