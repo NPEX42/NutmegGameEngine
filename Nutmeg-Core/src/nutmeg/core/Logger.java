@@ -14,8 +14,12 @@ public class Logger {
 		err.println("["+_sLib+"/"+_sClass+"]: "+_sMsg);
 	}
 	
+	public static void Debug(String _sLib, String _sClass, String _sMsg) {
+		if(Nutmeg.GetDebug()) Warn(_sLib, _sClass, _sMsg);
+	}
+	
 	public static void Assert(String _sLib, String _sClass, String _sMsg, boolean _bCondition) {
-		if(!_bCondition) { err.println("["+_sLib+"/"+_sClass+"]: "+_sMsg); Nutmeg.bClose = true; }
+		if(!_bCondition) { err.println("["+_sLib+"/"+_sClass+"]: "+_sMsg); Nutmeg.Close(); }
 	}
 	
 	public static void Throw(String _sLib, String _sClass, String _sMsg, Exception _exException) {

@@ -15,7 +15,7 @@ import nutmeg.gl.core.*;
 public class App extends Application {
 	@Override
 	public void OnUserCreate() {
-		Nutmeg.bDebugMode = false;
+		Nutmeg.DisableDebugMode();
 		
 		Logger.Log("SANDBOX", "App", "OpenGL Version: "+OpenGL.GetVersion());
 		Logger.Log("SANDBOX", "App", "GLSL Version : "+OpenGL.GetShadingLanguageVersion());
@@ -36,6 +36,7 @@ public class App extends Application {
 	public void OnUserUpdate() {
 		Background(Color.BLUE);
 		DrawTextureAsset(fWidth / 2, fHeight / 2, 512, -512, "testImage");
+		if(keyboard.isKeyReleased('1')) Nutmeg.Close();
 	}
 
 	@Override

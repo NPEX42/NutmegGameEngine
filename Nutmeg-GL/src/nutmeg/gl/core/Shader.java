@@ -84,7 +84,7 @@ public class Shader {
 			return uniformCache.get(name);
 		} else {
 			int loc = glGetUniformLocation(nProgramID, name);
-			if(loc == -1 && Nutmeg.bDebugMode) Logger.Log("NMGL", "Shader", "Unable To Find Uniform '"+name+"'");
+			if(loc == -1) Logger.Debug("NMGL", "Shader", "Unable To Find Uniform '"+name+"'");
 			if(loc > -1) uniformCache.put(name, loc);
 			return loc;
 		}

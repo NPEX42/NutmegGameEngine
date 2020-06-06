@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>350</y>
+      <w>580</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Application layer
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>390</y>
+      <w>580</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Engine Layer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>430</y>
+      <w>580</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Rendering Layer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>470</y>
+      <w>580</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>OS Layer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>510</y>
+      <w>580</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Hardware Layer</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

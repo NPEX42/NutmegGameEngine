@@ -43,7 +43,7 @@ public class Window {
 	}
 	
 	public void Update() {
-		if(Nutmeg.bDebugMode) GLUtil.setupDebugMessageCallback();
+		if(Nutmeg.GetDebug()) GLUtil.setupDebugMessageCallback();
 		glfwPollEvents();
 		glfwSwapBuffers(nWindowID);
 	}

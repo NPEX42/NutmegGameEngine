@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import org.joml.Vector2f;
 
-import nutmeg.core.IO;
 import nutmeg.core.Logger;
 import nutmeg.core.Nutmeg;
 import nutmeg.game.engine.assets.AssetManager;
@@ -51,24 +50,16 @@ public abstract class Application {
 	public abstract void OnUserCreate ();
 	public abstract void OnUserUpdate ();
 	public abstract void OnUserDestroy();
-	
 	public void ProcessInput() {};
 	public void OnUIRender() {};
-	
 	public short[] OnAudioSample(int nSamplesRequested, float nTimeStep) { return null; }
-	
 	public float fWidth, fHeight, fElapsedTime, fGlobalTime;
-	
 	public Keyboard keyboard;
-	
 	private Camera camera;
-	
 	private Mesh quadMesh;
 	private Transform transform;
 	private Shader shader;
-	
 	private Texture2D white, missing;
-
 	public Mouse mouse;
 	
 	public void ConstructWindow(int _nWidth, int _nHeight, String _sTitle, boolean _bDebug) {
@@ -84,6 +75,7 @@ public abstract class Application {
 		
 		quadMesh = new Mesh(pos, uvs, tris);
 		transform = new Transform();
+		
 		try {
 			SetShader(Shader.LoadJar("nutmeg/game/engine/res/shaders/simple.vs", "nutmeg/game/engine/res/shaders/simple.fs"));
 		} catch (IOException ioex) {
@@ -96,34 +88,22 @@ public abstract class Application {
 		
 		OnUserCreate(); //Call User creation code
 		long tp1, tp2;
-		while(window.IsActive() && !Nutmeg.bClose) { //Every Frame, run the users update code, and update the window
+		while(window.IsActive() && !Nutmeg.GetClose()) { //Every Frame, run the users update code, and update the window
+			
 			tp1 = System.currentTimeMillis();
 			ProcessInput();
 			OnUserUpdate();
 			UI.Update();
-			short[] audio = new short[0];
-			
-			
-			//TODO: Test Different Audio sampling algorithms
-//			if(fNextSampleTimer > 0.1f) {
-//				audio = OnAudioSample(audioBuffersPerSecond / 10, 0.001f); 
-//				fNextSampleTimer -= 0.1f;
-//			}
-//			fNextSampleTimer += fElapsedTime;
-//			AudioSystem.PlaySoundRawMono16(audio);
-			
-			
 			window.Update();
-			
-			//
 			fWidth = window.getfWidth();
 			fHeight = window.getfHeight();
 			tp2 = System.currentTimeMillis();
 			fElapsedTime = (tp2 - tp1) / 1000f;
 			fGlobalTime += fElapsedTime;
-			
 			AssetManager.UpdatePlayQueue(fElapsedTime);
+			
 		}
+		
 		Logger.Log("NMGE", "Application", "Delete Quad Mesh");
 		quadMesh.Delete();
 		Logger.Log("NMGE", "Application", "Delete Texture Assets");

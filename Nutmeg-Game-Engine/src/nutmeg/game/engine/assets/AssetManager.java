@@ -84,7 +84,7 @@ public class AssetManager {
 	static float fAccumTime;
 	private static AudioBuffer playingSound;
 	public static void UpdatePlayQueue(float timeStep) {
-		if(Nutmeg.bDebugMode) Logger.Log("NMGE", "Audio System", "Updating Audio System - fAccumTime: "+fAccumTime+" - Sounds Queued: "+audioQueue.size());
+		if(Nutmeg.GetDebug()) Logger.Log("NMGE", "Audio System", "Updating Audio System - fAccumTime: "+fAccumTime+" - Sounds Queued: "+audioQueue.size());
 		if(playingSound == null && !audioQueue.isEmpty()) {
 			playingSound = audioQueue.poll();
 			AudioSource source = new AudioSource();
