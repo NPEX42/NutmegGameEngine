@@ -2,9 +2,9 @@ package nutmeg.sandbox.core;
 
 import java.awt.Color;
 
+import nutmeg.al.OpenAL;
 import nutmeg.core.Logger;
 import nutmeg.core.Nutmeg;
-import nutmeg.game.engine.audio.AudioSystem;
 import nutmeg.game.engine.core.Application;
 import nutmeg.game.engine.ecs.Mesh;
 import nutmeg.game.engine.ecs.OrthoCamera;
@@ -22,6 +22,11 @@ public class App extends Application {
 		Logger.Log("SANDBOX", "App", "OpenGL Renderer: "+OpenGL.GetRenderer());
 		Logger.Log("SANDBOX", "App", "Max OpenGL VAO Attribs: "+OpenGL.GetMaxVertexArrayAttributes());
 		Logger.Log("SANDBOX", "App", "Max Textures: "+OpenGL.GetMaxTextureImageUnits());
+		
+		Logger.Log("SANDBOX", "App", "OpenAL Version: "+OpenAL.GetVersion());
+		Logger.Log("SANDBOX", "App", "OpenAL Renderer: "+OpenAL.GetRenderer());
+		Logger.Log("SANDBOX", "App", "OpenAL Vendor: "+OpenAL.GetVendor());
+		Logger.Log("SANDBOX", "App", "OpenAL EXT: "+OpenAL.GetExtenstions());
 		
 		LoadTextureAsset("UV_Test.png", "testImage");
 		SetCamera(new OrthoCamera(1, -1, new Transform()));

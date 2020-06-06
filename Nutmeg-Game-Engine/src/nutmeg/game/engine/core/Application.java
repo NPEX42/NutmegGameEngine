@@ -9,7 +9,7 @@ import org.joml.Vector2f;
 import nutmeg.core.IO;
 import nutmeg.core.Logger;
 import nutmeg.core.Nutmeg;
-import nutmeg.game.engine.audio.AudioSystem;
+import nutmeg.game.engine.assets.AssetManager;
 import nutmeg.game.engine.ecs.Camera;
 import nutmeg.game.engine.ecs.IdentityCamera;
 import nutmeg.game.engine.ecs.Mesh;
@@ -59,8 +59,6 @@ public abstract class Application {
 	
 	public float fWidth, fHeight, fElapsedTime, fGlobalTime;
 	
-	private int audioBuffersPerSecond = 44100; //1:1 Relationship between SampleRate and No. Of blocks requested per Second
-	
 	public Keyboard keyboard;
 	
 	private Camera camera;
@@ -76,8 +74,7 @@ public abstract class Application {
 	public void ConstructWindow(int _nWidth, int _nHeight, String _sTitle, boolean _bDebug) {
 		Window window = Window.Open(_nWidth, _nHeight, _sTitle, _bDebug);
 		if(window == null) { Logger.Warn("NMGE", "Application", "Unable To Open A window..."); return; } //Check that the window could be opened
-		AudioSystem.Init();	
-		
+		AssetManager.Init();
 		UI.Init(this);
 		
 		keyboard = new Keyboard(window);
@@ -125,17 +122,12 @@ public abstract class Application {
 			fElapsedTime = (tp2 - tp1) / 1000f;
 			fGlobalTime += fElapsedTime;
 			
-			AudioSystem.UpdatePlayQueue(fElapsedTime);
+			AssetManager.UpdatePlayQueue(fElapsedTime);
 		}
 		Logger.Log("NMGE", "Application", "Delete Quad Mesh");
 		quadMesh.Delete();
 		Logger.Log("NMGE", "Application", "Delete Texture Assets");
-		for(String key : textureAssets.keySet()) {
-			textureAssets.get(key).Delete();
-		}
-		
-		Logger.Log("NMGE", "Application", "Destroying Audio System");
-		AudioSystem.Destroy();
+		AssetManager.Destroy();
 		Logger.Log("NMGE", "Application", "Running OnUserDestroy()");
 		OnUserDestroy(); //Run the users destroy code
 		Logger.Log("NMGE", "Application", "Destroying the window");
@@ -196,23 +188,17 @@ public abstract class Application {
 	}
 	
 	public void DrawTextureAsset(float x, float y, float w, float h, String name) {
-		if(!textureAssets.containsKey(name)) {
-			Logger.Warn("NMGE", "Application", "Texture Asset '"+name+"' Couldn't be found...");
-			return;
-		}
-		DrawQuad(x, y, w, h, textureAssets.get(name));
+		Texture2D tex = AssetManager.GetTexture2D(name);
+		DrawQuad(x, y, w, h, tex);
 	}
 	
 	public void DrawTextureAsset(float x, float y, String name) {
-		Texture2D tex = textureAssets.get(name);
+		Texture2D tex = AssetManager.GetTexture2D(name);
 		DrawQuad(x, y, tex.GetWidth(), tex.GetHeight(), tex);
 	}
 	
 	public void LoadTextureAsset(String filePath, String friendlyName) {
-		if(!textureAssets.containsKey(friendlyName)) {
-			textureAssets.put(friendlyName, Texture2D.Load(filePath));
-			Logger.Log("NMGE", "Application", "Loaded Asset '"+filePath+"' Into '"+friendlyName+"'");
-		}
+		AssetManager.LoadTexture(filePath, friendlyName);
 	}
 	
 	public void Background(Color color) {
@@ -220,30 +206,23 @@ public abstract class Application {
 	}
 	
 	public void LoadTextureAssets(String filePath) {
-		String[] source = IO.loadStrings(filePath);
-		Logger.Assert("NMGE", "Application","Unable to Load asset list '"+filePath+"'", source != null);
-		for(String line : source) {
-			String path = line.split(",")[0];
-			String name = line.split(",")[1];
-			
-			LoadTextureAsset(path, name);
-		}
+		AssetManager.LoadTextures(filePath);
 	} 
 	
 	public void LoadAudioAssets(String filePath) {
-		AudioSystem.LoadAssetsFromFile(filePath);
+		AssetManager.LoadSounds(filePath);
 	}
 	
 	public void LoadAudioAsset(String filePath, String name) {
-		AudioSystem.LoadSound(filePath, name);
+		AssetManager.LoadSound(filePath, name);
 	}
 	
 	public void QueueSound(String name) {
-		AudioSystem.QueueSound(name);
+		AssetManager.QueueSound(name);
 	}
 	
-	public void PlaySound(String name) {
-		AudioSystem.PlaySoundAsset(name, false);
+	public void PlaySound(String name, boolean loop) {
+		AssetManager.PlaySound(name, loop);
 	}
 	
 	public void AddToggleButton(String name, float x, float y, float w, float h,  Color activeColor, Color inactiveColor) {
