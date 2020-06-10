@@ -16,7 +16,7 @@ import nutmeg.game.engine.ui.Bool;
 import nutmeg.game.engine.ui.UI;
 import nutmeg.gl.core.*;
 
-public class App extends Application {
+public class Editor extends Application {
 	
 	public float[] xPos = new float[1];
 	public float[] yPos = new float[1];
