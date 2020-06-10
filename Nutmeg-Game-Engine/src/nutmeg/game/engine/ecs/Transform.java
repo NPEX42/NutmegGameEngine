@@ -97,5 +97,17 @@ public class Transform {
 		z = 0;
 	}
 	
+	public void SetRotation(float YAW, float PITCH, float ROLL) {
+		yaw = YAW;
+		pitch = PITCH;
+		roll = ROLL;
+	}
+
+	public void SetRotation2D(float rot) {
+		roll = rot;
+	}
+	
+	
+	
 	
 }

@@ -1,7 +1,7 @@
 package nutmeg.game.engine.ecs;
 
 import org.joml.Matrix4f;
-
+@SuppressWarnings("unused")
 public abstract class Camera {
 	private Transform transform;
 	

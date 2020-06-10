@@ -36,4 +36,21 @@ public class IO {
 		Logger.Log("NMC", "IO", "File '"+_sFileName+"' Loaded in "+(tp2 - tp1)+"ms");
 		return buffer.toString();
 	}	
+	
+	public static void SaveStrings(String filePath, String[] source) {
+		long tp1, tp2;
+		tp1 = System.currentTimeMillis();
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+			for(String line : source) {
+				writer.write(line);
+				writer.newLine();
+			}
+			writer.close();
+		} catch(IOException ioex) {
+			Logger.Throw("NMC", "IO", "Unable To Create / Write To File '"+filePath+"'", ioex);
+		}
+		tp2 = System.currentTimeMillis();
+		System.err.println("[NMC/IO] File '"+filePath+"' Saved in "+(tp2 - tp1)+"ms");
+	}
 }

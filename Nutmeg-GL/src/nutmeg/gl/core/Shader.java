@@ -31,16 +31,16 @@ public class Shader {
 		
 		glCompileShader(nVS);
 		if(glGetShaderi(nVS, GL_COMPILE_STATUS ) == GL_FALSE){
-			Logger.Log("NMGL", "Shader", "Unable To Compile Vertex Shader...");
-			System.err.println(glGetShaderInfoLog(nVS));
-			System.exit(-1);
+			Logger.Warn("NMGL", "Shader", "Unable To Compile Vertex Shader...");
+			Logger.Warn("NMGL", "Shader", glGetShaderInfoLog(nFS));
+			//System.exit(-1);
 		}
 		
 		glCompileShader(nFS);
 		if(glGetShaderi(nFS, GL_COMPILE_STATUS ) == GL_FALSE){
-			Logger.Log("NMGL", "Shader", "Unable To Compile Fragment Shader...");
-			System.err.println(glGetShaderInfoLog(nFS));
-			System.exit(-1);
+			Logger.Warn("NMGL", "Shader", "Unable To Compile Fragment Shader...");
+			Logger.Warn("NMGL", "Shader", glGetShaderInfoLog(nFS));
+			//System.exit(-1);
 		}
 		
 		nPG = glCreateProgram();
@@ -68,9 +68,24 @@ public class Shader {
 		vs = IO.loadString(Shader.class.getClassLoader().getResourceAsStream(_sVertexPath), _sVertexPath);
 		fs = IO.loadString(Shader.class.getClassLoader().getResourceAsStream(_sFragmentPath), _sFragmentPath);
 		
-		if(vs == null || fs == null) { System.err.println("[NMGL/Shader] Unable To Load shader Files..."); System.exit(1);}
+		if(vs == null || fs == null) { System.err.println("[NMGL/Shader] Unable To Load shader Files..."); Nutmeg.Close(); }
 		
 		return Shader.Compile(vs, fs);
+	}
+	
+	public static Shader LoadJarSafe(String _sVertexPath, String _sFragmentPath) {
+		try {
+			String vs, fs;
+			vs = IO.loadString(Shader.class.getClassLoader().getResourceAsStream(_sVertexPath), _sVertexPath);
+			fs = IO.loadString(Shader.class.getClassLoader().getResourceAsStream(_sFragmentPath), _sFragmentPath);
+			if(vs == null || fs == null) { System.err.println("[NMGL/Shader] Unable To Load shader Files..."); Nutmeg.Close();}
+			
+			return Shader.Compile(vs, fs);
+		} catch (IOException ioex) {
+			Logger.Throw("NMGL", "Shader", "Unable To Load Shaders", ioex);
+			Nutmeg.Close();
+			return null;
+		}
 	}
 	
 	
@@ -97,9 +112,9 @@ public class Shader {
 	public void SetUniformTexture(String name, Texture2D texture, int nSlot, int nUnit) {
 		int maxSlots = OpenGL.GetMaxTextureImageUnits();
 		if(nSlot > maxSlots) Logger.Throw("NMGL", "Shader", "Unable to allocate Slot #"+nSlot, new Exception());
+		SetUniformInt(name, nSlot);
 		texture.Bind();
 		texture.SetSlot(nUnit);
-		SetUniformInt(name, nSlot);
 	}
 	
 	public void SetUniformInt(String name, int _nValue) {

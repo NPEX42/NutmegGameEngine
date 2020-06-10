@@ -22,8 +22,8 @@ public class OpenGL {
 		return glGetString(GL_VENDOR);
 	}
 	
-	public static String GetExtensions() {
-		return glGetString(GL_EXTENSIONS);
+	public static String[] GetExtensions() {
+		return glGetString(GL_EXTENSIONS).split(" ");
 	}
 	
 	public static String GetShadingLanguageVersion() {
