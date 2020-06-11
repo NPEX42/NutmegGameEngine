@@ -11,16 +11,16 @@ import nutmeg.glfw.callbacks.IResizeCallback;
 public class GLFW_API {
 	
 	//Callback Managers
-	private static ArrayList<Pair<Integer, IResizeCallback>> resizeCallbacks; 
-	private static ArrayList<Pair<Integer, ICloseCallback>>  closeCallbacks; 
-	private static ArrayList<Pair<Integer, IMouseCallback>>  mouseCallbacks; 
-	private static ArrayList<Pair<Integer, IKeyCallback>>    keyCallbacks;
+	private static ArrayList<Pair<Long, IResizeCallback>> resizeCallbacks; 
+	private static ArrayList<Pair<Long, ICloseCallback>>  closeCallbacks; 
+	private static ArrayList<Pair<Long, IMouseCallback>>  mouseCallbacks; 
+	private static ArrayList<Pair<Long, IKeyCallback>>    keyCallbacks;
 	
 	public static boolean Init() {
-		resizeCallbacks = new ArrayList<Pair<Integer,IResizeCallback>>();
-		closeCallbacks  = new ArrayList<Pair<Integer,ICloseCallback>> ();
-		keyCallbacks    = new ArrayList<Pair<Integer,IKeyCallback>>   ();
-		mouseCallbacks  = new ArrayList<Pair<Integer,IMouseCallback>> ();
+		resizeCallbacks = new ArrayList<Pair<Long,IResizeCallback>>();
+		closeCallbacks  = new ArrayList<Pair<Long,ICloseCallback>> ();
+		keyCallbacks    = new ArrayList<Pair<Long,IKeyCallback>>   ();
+		mouseCallbacks  = new ArrayList<Pair<Long,IMouseCallback>> ();
 		return glfwInit();
 	}
 	
@@ -28,11 +28,26 @@ public class GLFW_API {
 		glfwTerminate();
 	}
 	
+	public static boolean WindowShouldClose(Window window) {
+		return glfwWindowShouldClose(window.GetID());
+	}
+	
+	public static void UpdateState(Window window) {
+		glfwPollEvents();
+		glfwSwapBuffers(window.GetID());
+	}
+	
 	public static void RegisterWindow(Window window) {
 		RegisterWindowResize(window);
 		RegisterKeyEvent    (window);
 		RegisterMouseEvent  (window);
 		RegisterWindowClose (window);
+	}
+	
+	public static long CreateWindow(int width, int height, String title) {
+		long ID = glfwCreateWindow(width, height, title, 0, 0);
+		glfwShowWindow(ID);
+		return ID;
 	}
 	
 	public static void RegisterWindowResize(Window window) {
@@ -52,23 +67,23 @@ public class GLFW_API {
 	}
 	
 	public static void AddResizeCallback(Window window, IResizeCallback callback) {
-		resizeCallbacks.add(new Pair<Integer, IResizeCallback>(window.GetID(), callback));
+		resizeCallbacks.add(new Pair<Long, IResizeCallback>(window.GetID(), callback));
 	}
 	
 	public static void AddCloseCallback(Window window, ICloseCallback callback) {
-		closeCallbacks.add(new Pair<Integer, ICloseCallback>(window.GetID(), callback));
+		closeCallbacks.add(new Pair<Long, ICloseCallback>(window.GetID(), callback));
 	}
 	
 	public static void AddMouseCallback(Window window, IMouseCallback callback) {
-		mouseCallbacks.add(new Pair<Integer, IMouseCallback>(window.GetID(), callback));
+		mouseCallbacks.add(new Pair<Long, IMouseCallback>(window.GetID(), callback));
 	}
 	
 	public static void AddKeyCallback(Window window, IKeyCallback callback) {
-		keyCallbacks.add(new Pair<Integer, IKeyCallback>(window.GetID(), callback));
+		keyCallbacks.add(new Pair<Long, IKeyCallback>(window.GetID(), callback));
 	}
 	
 	public static void DispatchResizeEvent(long windowID, int width, int height) {
-		for(Pair<Integer, IResizeCallback> pair : resizeCallbacks) {
+		for(Pair<Long, IResizeCallback> pair : resizeCallbacks) {
 			if(pair.first == windowID) {
 				pair.second.OnResize(width, height);
 			}
@@ -76,7 +91,7 @@ public class GLFW_API {
 	}
 	
 	public static void DispatchCloseEvent(long windowID) {
-		for(Pair<Integer, ICloseCallback> pair : closeCallbacks) {
+		for(Pair<Long, ICloseCallback> pair : closeCallbacks) {
 			if(pair.first == windowID) {
 				pair.second.OnClose();
 			}
@@ -84,7 +99,7 @@ public class GLFW_API {
 	}
 	
 	public static void DispatchMouseMovedEvent(long windowID, double x , double y) {
-		for(Pair<Integer, IMouseCallback> pair : mouseCallbacks) {
+		for(Pair<Long, IMouseCallback> pair : mouseCallbacks) {
 			if(pair.first == windowID) {
 				pair.second.OnMouseMoved(x, y);
 			}
@@ -92,7 +107,7 @@ public class GLFW_API {
 	}
 	
 	public static void DispatchMouseButtonEvent(long windowID, int button, int action, int mods) {
-		for(Pair<Integer, IMouseCallback> pair : mouseCallbacks) {
+		for(Pair<Long, IMouseCallback> pair : mouseCallbacks) {
 			if(pair.first == windowID) {
 				switch(action) {
 				case GLFW_PRESS:   pair.second.OnMousePressed(button) ;
@@ -103,7 +118,7 @@ public class GLFW_API {
 	}
 	
 	public static void DispatchKeyEvent(long windowID, int key, int scancode, int action, int mods) {
-		for(Pair<Integer, IKeyCallback> pair : keyCallbacks) {
+		for(Pair<Long, IKeyCallback> pair : keyCallbacks) {
 			if(pair.first == windowID) {
 				switch(action) {
 				case GLFW_PRESS:   pair.second.OnKeyPressed ((char) key);
@@ -112,6 +127,18 @@ public class GLFW_API {
 				}
 			}
 		}
+	}
+
+	public static void DestroyWindow(Window window) {
+		glfwDestroyWindow(window.GetID());
+	}
+
+	public static void ShowWindow(Window window) {
+		glfwShowWindow(window.GetID());
+	}
+
+	public static void HideWindow(Window window) {
+		glfwHideWindow(window.GetID());
 	}
 	
 	
