@@ -1,264 +1,167 @@
 package nutmeg.game.engine.core;
 
 import java.awt.Color;
-import java.io.IOException;
-import java.util.HashMap;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import org.joml.Vector2f;
 
+import nutmeg.al.core.AudioManager;
 import nutmeg.core.IO;
 import nutmeg.core.Logger;
 import nutmeg.core.Nutmeg;
-import nutmeg.game.engine.audio.AudioSystem;
+
 import nutmeg.game.engine.ecs.Camera;
+import nutmeg.game.engine.ecs.Geometry;
 import nutmeg.game.engine.ecs.IdentityCamera;
-import nutmeg.game.engine.ecs.Mesh;
+
 import nutmeg.game.engine.ecs.Transform;
 import nutmeg.game.engine.input.Keyboard;
 import nutmeg.game.engine.input.Mouse;
+
 import nutmeg.game.engine.rendering.MeshRenderer;
-import nutmeg.game.engine.ui.ToggleButton;
+import nutmeg.game.engine.ui.UI;
+import nutmeg.gl.core.Framebuffer;
 import nutmeg.gl.core.Renderer;
 import nutmeg.gl.core.Shader;
 import nutmeg.gl.core.Texture2D;
 
 import static org.lwjgl.opengl.GL46.*;
-
-public abstract class Application {
-	private HashMap<String, Texture2D> textureAssets = new HashMap<String, Texture2D>();
-	
-	//Quad Mesh Data ============================
-	private float[] pos = {
-			+0.5f, +0.5f, 0,
-			-0.5f, +0.5f, 0,
-			-0.5f, -0.5f, 0,
-			+0.5f, -0.5f, 0
-	};
-	
-	private float[] uvs = {
-			1.0f,0.0f,
-			0.0f,0.0f,
-			0.0f,1.0f,
-			1.0f,1.0f,	
-	};
-	
-	private int[] tris = {
-		0,1,2,
-		2,3,0
-	};
-	//===========================================
-	
-	public abstract void OnUserCreate ();
-	public abstract void OnUserUpdate ();
-	public abstract void OnUserDestroy();
-	
-	public void ProcessInput() {};
-	public void OnUIRender() {};
-	
-	public short[] OnAudioSample(int nSamplesRequested, float nTimeStep) { return null; }
-	
-	public float fWidth, fHeight, fElapsedTime, fGlobalTime;
-	
-	private int audioBuffersPerSecond = 44100; //1:1 Relationship between SampleRate and No. Of blocks requested per Second
-	
-	public Keyboard keyboard;
-	
-	private Camera camera;
-	
-	private Mesh quadMesh;
-	private Transform transform;
+//@SuppressWarnings("unused")
+public abstract class Application implements ApplicationAPI {
+	private Window window;
 	private Shader shader;
+	private Camera camera;
+	private Texture2D white;
+	private Queue<Geometry> geometryQueue;
 	
-	private Texture2D white, missing;
-
+	public float width, height;
+	
+	private int lastDCCount;
+	private int lastDCTime;
+	private int lastVertexCount;
 	public Mouse mouse;
+	public Keyboard keyboard;
+	private Framebuffer frameBuffer = null;
 	
-	public void ConstructWindow(int _nWidth, int _nHeight, String _sTitle, boolean _bDebug) {
-		Window window = Window.Open(_nWidth, _nHeight, _sTitle, _bDebug);
-		if(window == null) { Logger.Warn("NMGE", "Application", "Unable To Open A window..."); return; } //Check that the window could be opened
-		AudioSystem.Init();	
-		
-		UI.Init(this);
-		
-		keyboard = new Keyboard(window);
-		mouse = new Mouse(window);
-		fHeight = _nHeight;
-		fWidth = _nWidth;
-		
-		quadMesh = new Mesh(pos, uvs, tris);
-		transform = new Transform();
-		try {
-			SetShader(Shader.LoadJar("nutmeg/game/engine/res/shaders/simple.vs", "nutmeg/game/engine/res/shaders/simple.fs"));
-		} catch (IOException ioex) {
-			Logger.Throw("NMGE", "Application", "An IOException Has Occurred", ioex);
-		}
-		
-		white = Texture2D.LoadJar("nutmeg/game/engine/res/textures/white.png");
-		
-		camera = new IdentityCamera();
-		
-		OnUserCreate(); //Call User creation code
+	@Override
+	public void ConstructWindow(int width, int height, String title) {
 		long tp1, tp2;
-		while(window.IsActive() && !Nutmeg.bClose) { //Every Frame, run the users update code, and update the window
+		this.width = width;
+		this.height = height;
+		window = Window.Open(width, height, title, true);
+		mouse = new Mouse(window);
+		keyboard = new Keyboard(window);
+		
+		UI.Init(this, window);
+		
+		geometryQueue = new LinkedList<Geometry>();
+		camera = new IdentityCamera();
+		white = Texture2D.LoadJar("nutmeg/game/engine/res/textures/white.png");
+		AudioManager.Init();
+		shader = Shader.LoadJarSafe("nutmeg/game/engine/res/shaders/simple.vs", "nutmeg/game/engine/res/shaders/simple.fs");
+		OnUserCreate();
+		float tpf = 1;
+		while(window.IsActive() && !Nutmeg.GetClose()) {
+			Background(Color.gray);
 			tp1 = System.currentTimeMillis();
-			ProcessInput();
-			OnUserUpdate();
-			UI.Update();
-			short[] audio = new short[0];
-			
-			
-			//TODO: Test Different Audio sampling algorithms
-//			if(fNextSampleTimer > 0.1f) {
-//				audio = OnAudioSample(audioBuffersPerSecond / 10, 0.001f); 
-//				fNextSampleTimer -= 0.1f;
-//			}
-//			fNextSampleTimer += fElapsedTime;
-//			AudioSystem.PlaySoundRawMono16(audio);
-			
+			if(frameBuffer != null) { frameBuffer.Bind();}// Logger.Log("NMGE", "Application", "Rendering To FrameBuffer"); }
+			OnUserUpdate(tpf);
+			SubmitGeometry();
+			OnUIRender();
+			UI.Render();
+			UI.Update(window, mouse, keyboard, 1);
 			
 			window.Update();
-			
-			//
-			fWidth = window.getfWidth();
-			fHeight = window.getfHeight();
 			tp2 = System.currentTimeMillis();
-			fElapsedTime = (tp2 - tp1) / 1000f;
-			fGlobalTime += fElapsedTime;
-			
-			AudioSystem.UpdatePlayQueue(fElapsedTime);
+			tpf = (tp2 - tp1) / 1000f;
 		}
-		Logger.Log("NMGE", "Application", "Delete Quad Mesh");
-		quadMesh.Delete();
-		Logger.Log("NMGE", "Application", "Delete Texture Assets");
-		for(String key : textureAssets.keySet()) {
-			textureAssets.get(key).Delete();
-		}
-		
-		Logger.Log("NMGE", "Application", "Destroying Audio System");
-		AudioSystem.Destroy();
-		Logger.Log("NMGE", "Application", "Running OnUserDestroy()");
-		OnUserDestroy(); //Run the users destroy code
-		Logger.Log("NMGE", "Application", "Destroying the window");
-		window.Destroy(); //Destroy the window
-		Logger.Log("NMGE", "Application", "Closing GLFW");
-		Window.CloseGLFW(); //Close / clean-up GLFW
+		OnUserDestroy();
+		AudioManager.Destroy();
+		window.Destroy();
+		Window.CloseGLFW();
+		Date d = new Date(System.currentTimeMillis());
+		IO.SaveStrings("log.txt", Nutmeg.GetOutputLog());
+		IO.SaveStrings("err.txt", Nutmeg.GetErrorLog()) ;
 	}
 	
-	//API functions
-	public void SetShader(Shader s) {
-		shader = s;
-		shader.BindAttrib(0, "a_Position");
-		shader.BindAttrib(1, "a_UV");
-	}
-	
-	public void SetCamera(Camera cam) {
-		camera = cam;
-	}
-	
-	public void DrawQuad(float x, float y, float w, float h) {
-		transform.SetPosition(x, y);
-		transform.SetScale2D(w, h);
-		shader.SetUniformTexture("t_Albedo", white, 0, GL_TEXTURE0);
-		shader.SetUniformColor("u_TintColor", Color.white);
-		shader.SetUniformMat4("u_Transform", transform.GetTransformMatrix());
-		shader.SetUniformMat4("u_Projection", camera.GetProjection(fWidth, fHeight));
-		MeshRenderer.Render(quadMesh);
-	}
-	
-	public void DrawQuad(float x, float y, float w, float h, Color color) {
-		transform.SetPosition(x, y);
-		transform.SetScale2D(w, h);
-		shader.SetUniformTexture("t_Albedo", white, 0, GL_TEXTURE0);
-		shader.SetUniformColor("u_TintColor", color);
-		shader.SetUniformMat4("u_Transform", transform.GetTransformMatrix());
-		shader.SetUniformMat4("u_Projection", camera.GetProjection(fWidth, fHeight));
-		MeshRenderer.Render(quadMesh);
-	}
-	
-	public void DrawQuad(float x, float y, float w, float h, Texture2D texture) {
-		transform.SetPosition(x, y);
-		transform.SetScale2D(w, h);
-		shader.SetUniformTexture("t_Albedo", texture, 0, GL_TEXTURE0);
-		shader.SetUniformColor("u_TintColor", Color.white);
-		shader.SetUniformMat4("u_Transform", transform.GetTransformMatrix());
-		shader.SetUniformMat4("u_Projection", camera.GetProjection(fWidth, fHeight));
-		MeshRenderer.Render(quadMesh);
-	}
-	
-	public void DrawQuad(float x, float y, float w, float h, Texture2D texture, Color tint) {
-		transform.SetPosition(x, y);
-		transform.SetScale2D(w, h);
-		shader.SetUniformTexture("t_Albedo", texture, 0, GL_TEXTURE0);
-		shader.SetUniformColor("u_TintColor", tint);
-		shader.SetUniformMat4("u_Transform", transform.GetTransformMatrix());
-		shader.SetUniformMat4("u_Projection", camera.GetProjection(fWidth, fHeight));
-		MeshRenderer.Render(quadMesh);
-	}
-	
-	public void DrawTextureAsset(float x, float y, float w, float h, String name) {
-		if(!textureAssets.containsKey(name)) {
-			Logger.Warn("NMGE", "Application", "Texture Asset '"+name+"' Couldn't be found...");
-			return;
-		}
-		DrawQuad(x, y, w, h, textureAssets.get(name));
-	}
-	
-	public void DrawTextureAsset(float x, float y, String name) {
-		Texture2D tex = textureAssets.get(name);
-		DrawQuad(x, y, tex.GetWidth(), tex.GetHeight(), tex);
-	}
-	
-	public void LoadTextureAsset(String filePath, String friendlyName) {
-		if(!textureAssets.containsKey(friendlyName)) {
-			textureAssets.put(friendlyName, Texture2D.Load(filePath));
-			Logger.Log("NMGE", "Application", "Loaded Asset '"+filePath+"' Into '"+friendlyName+"'");
-		}
-	}
-	
+	@Override
 	public void Background(Color color) {
-		Renderer.Background(color);
+		Renderer.Background(color);	
 	}
 	
-	public void LoadTextureAssets(String filePath) {
-		String[] source = IO.loadStrings(filePath);
-		Logger.Assert("NMGE", "Application","Unable to Load asset list '"+filePath+"'", source != null);
-		for(String line : source) {
-			String path = line.split(",")[0];
-			String name = line.split(",")[1];
-			
-			LoadTextureAsset(path, name);
+	@Override
+	public void SetRenderTarget(Framebuffer target) {
+		frameBuffer = target;
+	}
+	
+	@Override
+	public void SetShader(Shader newShader) {
+		shader.Delete();
+		shader = newShader;
+		shader.BindAttrib(0, "a_Position");
+		shader.BindAttrib(0, "a_UV");
+	}
+	
+	@Override
+	public Texture2D GetRenderTexture() {
+		if(frameBuffer != null) return frameBuffer.GetColorData();
+		return null;
+	}
+	
+	@Override
+	public void SubmitGeometry() {
+		long tp1, tp2;
+		tp1 = System.currentTimeMillis();
+		shader.Bind();
+		lastDCCount = geometryQueue.size();
+		//Logger.Log("NMGE", "Application", "Rendering "+geometryQueue.size()+" Objects...");
+		while(!geometryQueue.isEmpty()) {
+			Geometry geom = geometryQueue.poll();
+			shader.SetUniformMat4("u_Transform", geom.GetTransform().GetTransformMatrix());
+			shader.SetUniformMat4("u_Projection", camera.GetProjection(width, height));
+			shader.SetUniformColor("u_TintColor", geom.GetTintColor());
+			shader.SetUniformTexture("t_Albedo", geom.GetAlbedo(), 0, GL_TEXTURE0);
+			shader.SetUniformTexture("t_Shading", geom.GetShading(), 1, GL_TEXTURE1);
+			MeshRenderer.Render(geom.GetMesh());
+			lastVertexCount += geom.GetMesh().GetVertexCount();
+			geom.GetMesh().Delete();
 		}
-	} 
-	
-	public void LoadAudioAssets(String filePath) {
-		AudioSystem.LoadAssetsFromFile(filePath);
+		if(frameBuffer != null) frameBuffer.Unbind();
+		tp2 = System.currentTimeMillis();
+		lastDCTime = (int) (tp2 - tp1);
 	}
 	
-	public void LoadAudioAsset(String filePath, String name) {
-		AudioSystem.LoadSound(filePath, name);
+	@Override
+	public void DrawImage(float x, float y, Texture2D texture) {
+		geometryQueue.add(new Geometry(PrimitiveFactory.GenerateQuad(x, y, 1, 1), new Transform(), Color.white, texture, white));
 	}
 	
-	public void QueueSound(String name) {
-		AudioSystem.QueueSound(name);
+	public void DrawImageShaded(float x, float y, Texture2D texture, Texture2D shading) {
+		geometryQueue.add(new Geometry(PrimitiveFactory.GenerateQuad(x, y, 1, 1), new Transform(), Color.white, texture, shading));
 	}
 	
-	public void PlaySound(String name) {
-		AudioSystem.PlaySoundAsset(name, false);
+	
+	@Override
+	public void DrawRect(float x, float y, Color color) {
+		geometryQueue.add(new Geometry(PrimitiveFactory.GenerateQuad(x, y, 1, 1), new Transform(), color, white, white));
 	}
 	
-	public void AddToggleButton(String name, float x, float y, float w, float h,  Color activeColor, Color inactiveColor) {
-		UI.AddToggleButton(name, new Vector2f(x,y), new Vector2f(w,h), activeColor, inactiveColor);
+	public int GetLastDrawCallLength() {
+		return lastDCCount;
 	}
 	
-	public ToggleButton GetToggleButton(String name) {
-		return UI.GetToggleButton(name);
+	public int GetLastDrawCallTime() {
+		return lastDCTime;
 	}
 	
-	public void AddPushButton(String name, float x, float y, float w, float h,  Color activeColor, Color inactiveColor) {
-		UI.AddPushButton(name, new Vector2f(x,y), new Vector2f(w,h), activeColor, inactiveColor);
+	public int GetVertexCount() {
+		int vc = lastVertexCount;
+		lastVertexCount = 0;
+		return vc;
 	}
 	
-	public PushButton GetPushButton(String name) {
-		return UI.GetPushButton(name);
-	}
+//	public String GetTitle() {
+//		
+//	}
 }

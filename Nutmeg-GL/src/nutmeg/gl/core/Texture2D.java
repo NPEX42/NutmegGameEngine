@@ -36,11 +36,32 @@ public class Texture2D {
 		Logger.Log("NMGL", "Texture2D", "Building Texture ID-"+String.format("%04x", nID));
 	}
 	
+	public Texture2D(int colorID, int width, int height) {
+		nID = colorID;
+		w = width;
+		h = height;
+	}
+
 	public static Texture2D Load(String filePath) {
 		long tp1, tp2;
 		tp1 = System.currentTimeMillis();
 		int[] width = new int[1], height = new int[1], channels = new int[1];
 		ByteBuffer data;
+		data = stbi_load(filePath, width, height, channels, 4);
+		tp2 = System.currentTimeMillis();
+		Logger.Log("NMGL", "Texture2D", "Texture '"+filePath+"' ("+width[0]+"x"+height[0]+") Loaded in "+(tp2 - tp1)+"ms");
+		
+		Logger.Assert("NMGL", "Texture2D", "Unable To Load Texture '"+filePath+"'", (data != null));
+		
+		return LoadRGBA8(data, width[0], height[0]);
+	}
+	
+	public static Texture2D Load(String filePath, boolean flip) {
+		long tp1, tp2;
+		tp1 = System.currentTimeMillis();
+		int[] width = new int[1], height = new int[1], channels = new int[1];
+		ByteBuffer data;
+		stbi_set_flip_vertically_on_load(flip);
 		data = stbi_load(filePath, width, height, channels, 4);
 		tp2 = System.currentTimeMillis();
 		Logger.Log("NMGL", "Texture2D", "Texture '"+filePath+"' ("+width[0]+"x"+height[0]+") Loaded in "+(tp2 - tp1)+"ms");

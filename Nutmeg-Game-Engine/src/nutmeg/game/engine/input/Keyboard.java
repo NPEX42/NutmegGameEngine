@@ -1,6 +1,5 @@
 package nutmeg.game.engine.input;
 import static org.lwjgl.glfw.GLFW.*;
-
 import nutmeg.core.Logger;
 import nutmeg.game.engine.core.Window;
 public class Keyboard {
@@ -25,7 +24,7 @@ public class Keyboard {
 	
 	private void OnKeyEvent(long windowID, int key, int scancode, int action, int modifiers) {
 		if(key < keyStatesReleased.length && action == GLFW_RELEASE) {
-			Logger.Log("NMGE","Keyboard","Key '"+(char)key+"' Has been released...");
+			Logger.Debug("NMGE","Keyboard","Key '"+(char)key+"' Has been released...");
 			keyStatesReleased[key] = true;
 		} else if(key < keyStatesReleased.length) {
 			keyStatesReleased[key] = false;

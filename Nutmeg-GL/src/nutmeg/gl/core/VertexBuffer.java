@@ -38,9 +38,11 @@ public class VertexBuffer {
 	public void Enable() { glEnableVertexAttribArray(nIndex);     }
 	
 	public void SetData(float[] _fData) {
-		if(_fData.length > nLength || _fData.length % nCoordSize == 0) throw new RuntimeException("[NMGL] Allocated Data is Too Large And/Or Not A multiple of CoordSize");
+		Logger.Debug("NMGL", "Vertex Buffer", "Data Length: "+_fData.length);
+		if(_fData.length > nLength || _fData.length % nCoordSize != 0) throw new RuntimeException("[NMGL] Allocated Data is Too Large And/Or Not A multiple of CoordSize");
 		glInvalidateBufferData(nVBOiD);
 		glBufferData(GL_ARRAY_BUFFER, _fData, GL_DYNAMIC_DRAW);
+		Logger.Debug("NMGL", "Vertex Buffer", "VB"+toString());
 	}
 	
 	public String toString() {

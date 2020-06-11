@@ -1,0 +1,25 @@
+[18:10:46][NMGL/Texture2D]: Building Texture ID-0002
+[18:10:46][NMGL/Texture2D]: Texture 'nutmeg/game/engine/res/textures/white.png' (128x128) Loaded in 145ms
+[18:10:46][NMC/IO]: File 'nutmeg/game/engine/res/shaders/simple.vs' Loaded in 0ms
+[18:10:46][NMC/IO]: File 'nutmeg/game/engine/res/shaders/simple.fs' Loaded in 0ms
+[18:10:46][NMGL/Texture2D]: Building Texture ID-0005
+[18:10:46][NMGL/Texture2D]: Texture 'nutmeg/game/engine/res/textures/white.png' (128x128) Loaded in 6ms
+[18:10:46][NMGL/Texture2D]: Building Texture ID-0006
+[18:10:46][NMGL/Texture2D]: Texture 'nutmeg/game/engine/res/textures/white.png' (128x128) Loaded in 5ms
+[18:10:46][SANDBOX/App]: OpenGL Version: 4.6.0 NVIDIA 442.19
+[18:10:46][SANDBOX/App]: GLSL Version : 4.60 NVIDIA
+[18:10:46][SANDBOX/App]: OpenGL Renderer: 4.6.0 NVIDIA 442.19
+[18:10:46][SANDBOX/App]: Max OpenGL VAO Attribs: 16
+[18:10:46][SANDBOX/App]: Max Textures: 32
+[18:10:46][SANDBOX/App]: OpenAL Version: 1.1 ALSOFT 1.19.1
+[18:10:46][SANDBOX/App]: OpenAL Renderer: OpenAL Soft
+[18:10:46][SANDBOX/App]: OpenAL Vendor: OpenAL Community
+[18:10:46][SANDBOX/App]: OpenAL EXT: [Ljava.lang.String;@551bdc27
+[18:10:48][NMGE/Window]: Window Resized to 1920x976
+[18:11:20][NMGL/Texture2D]: Texture 'C:\Users\Work\Documents\Thumb01.png' (1280x720) Loaded in 13ms
+[18:11:20][NMGL/Texture2D]: Building Texture ID-0005
+[18:12:32][NMGE/Window]: Window Focus Changed To: false
+[18:12:43][NMGE/Window]: Window Focus Changed To: true
+[18:12:45][Sandbox/App]: Reloading Shaders...
+[18:12:45][NMC/IO]: File 'nutmeg/game/engine/res/shaders/simple.vs' Loaded in 0ms
+[18:12:45][NMC/IO]: File 'nutmeg/game/engine/res/shaders/simple.fs' Loaded in 0ms

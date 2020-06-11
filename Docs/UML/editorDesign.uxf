@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>190</x>
+      <y>20</y>
+      <w>1260</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Nutmeg Editor</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>190</x>
+      <y>50</y>
+      <w>360</w>
+      <h>480</h>
+    </coordinates>
+    <panel_attributes>Controls
+--
+Camera Position (XYZ)
+--
+Viewport Scale
+--
+Entity List
+-ExampleEnt V
+--Transform V
+---Position (XYZ)
+---Rotation (RPY)
+---Scale (XYZ)
+--Material
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>190</x>
+      <y>530</y>
+      <w>360</w>
+      <h>340</h>
+    </coordinates>
+    <panel_attributes>Stats / Info
+--
+FrameRate
+DrawCalls
+Vertex Count
+Renderer
+OpenGl Version
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>550</x>
+      <y>530</y>
+      <w>710</w>
+      <h>340</h>
+    </coordinates>
+    <panel_attributes>Logs</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>550</x>
+      <y>50</y>
+      <w>710</w>
+      <h>480</h>
+    </coordinates>
+    <panel_attributes>ViewPort</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1260</x>
+      <y>50</y>
+      <w>190</w>
+      <h>820</h>
+    </coordinates>
+    <panel_attributes>Material Editor
+--
+[V] Material List
+--
+ [V]ExampleMat
+  [V]Shader
+    Vertex Shader Path
+    Fragment Shader Path
+  Albedo (Texture2D)
+  Specular Map (Texture2D)
+  Normal Map (Texture2D)
+  Color Tint (RGBA)
+--
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

@@ -1,7 +1,10 @@
 package nutmeg.sandbox.core;
 
+import nutmeg.core.Nutmeg;
+
 public class SandboxMain {
 	public static void main(String[] args) {
-		new App().ConstructWindow(1080, 720, "Nutmeg Game Engine", true);
+		Nutmeg.DisableDebugMode();
+		new App().ConstructWindow(1080, 720, "App");
 	}
 }
