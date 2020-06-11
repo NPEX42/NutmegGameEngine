@@ -9,5 +9,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Dev/java/NutmegGameEngine/vendor/imgui-binding-1.76-0.12.jar"/>
 	<classpathentry kind="lib" path="C:/Dev/java/NutmegGameEngine/vendor/imgui-lwjgl3-1.76-0.12.jar"/>
+	<classpathentry kind="lib" path="C:/Dev/java/LWJGL3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Nutmeg Core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Nutmeg GLFW"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Nutmeg OpenGL"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

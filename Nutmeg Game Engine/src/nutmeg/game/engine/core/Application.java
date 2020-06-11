@@ -4,14 +4,19 @@ import java.util.ArrayList;
 
 import nutmeg.glfw.core.GLFW_API;
 import nutmeg.glfw.core.Window;
+import nutmeg.imgui.core.IMGUI_API;
+import nutmeg.imgui.core.UI;
 
 public abstract class Application {
 	private Window host;
 	private ArrayList<Layer> layers;
+	private IMGUI_API imgui_api;
+	public static boolean closeRequested;
 	public void CreateApp(String title) {
 		host = Window.Open(title);
 		layers = new ArrayList<Layer>();
-		
+		imgui_api = new IMGUI_API();
+		imgui_api.Init(1080, 720, host);
 		Setup();
 	}
 	
@@ -22,8 +27,15 @@ public abstract class Application {
 	
 	public void Run() {
 		for(Layer layer : layers) layer.OnAttach();
-		while(host.IsActive()) {
+		while(host.IsActive() && !closeRequested) {
 			for(Layer layer : layers) layer.OnRender();
+			for(Layer layer : layers) {
+				UI.NewFrame();
+				layer.OnIMGuiRender();
+				UI.Render();
+			}
+			UI.Update(host);
+			imgui_api.Draw();
 			host.Update();
 		}
 		for(Layer layer : layers) layer.OnDestroy();
