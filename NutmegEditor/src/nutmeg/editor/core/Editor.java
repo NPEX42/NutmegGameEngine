@@ -2,7 +2,7 @@ package nutmeg.editor.core;
 
 
 import java.awt.Color;
-import java.util.Date;
+
 
 import javax.swing.JFileChooser;
 
@@ -10,8 +10,6 @@ import nutmeg.al.OpenAL;
 import nutmeg.core.Logger;
 import nutmeg.core.Nutmeg;
 import nutmeg.game.engine.core.Application;
-import nutmeg.game.engine.ecs.OrthoCamera;
-import nutmeg.game.engine.ecs.Transform;
 import nutmeg.game.engine.ui.Bool;
 import nutmeg.game.engine.ui.UI;
 import nutmeg.gl.core.*;
@@ -93,7 +91,7 @@ public class Editor extends Application {
 		UI.Text("Vertices: "+GetVertexCount());
 		UI.Text("FPS: "+fps);
 		UI.Checkbox("Flip UV Y?", flip);
-		UI.SameLine();
+		//UI.SameLine();
 		if(UI.Button("Load Albedo...")) {
 			JFileChooser jfc = new JFileChooser();
 			jfc.showOpenDialog(null);
@@ -105,7 +103,7 @@ public class Editor extends Application {
 		
 		
 		UI.SameLine();
-		UI.Image(albedo, albedo.GetWidth()  * 0.5f, albedo.GetHeight() * 0.5f);
+		UI.Image(albedo, 128, 128);
 		
 		if(UI.Button("Load Shading Map...")) {
 			JFileChooser jfc = new JFileChooser();
@@ -116,7 +114,7 @@ public class Editor extends Application {
 			}
 		}
 		UI.SameLine();
-		UI.Image(shading, shading.GetWidth()  * 0.5f, shading.GetHeight()  * 0.5f);
+		UI.Image(shading, 128, 128);
 		UI.HistogramFloat("Framerate History", fpsHistory, 0, "", 0, 60, 300, 60);
 		
 		if(UI.Button("Reload Shaders...")) {
