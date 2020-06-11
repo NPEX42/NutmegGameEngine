@@ -67,24 +67,29 @@ public class GLFW_API {
 	}
 	
 	public static void AddResizeCallback(Window window, IResizeCallback callback) {
+		//System.err.println("Adding Window #"+window.GetID()+" to the Resize Listeners");
 		resizeCallbacks.add(new Pair<Long, IResizeCallback>(window.GetID(), callback));
 	}
 	
 	public static void AddCloseCallback(Window window, ICloseCallback callback) {
+		//System.err.println("Adding Window #"+window.GetID()+" to the Close Listeners");
 		closeCallbacks.add(new Pair<Long, ICloseCallback>(window.GetID(), callback));
 	}
 	
 	public static void AddMouseCallback(Window window, IMouseCallback callback) {
+		//System.err.println("Adding Window #"+window.GetID()+" to the Mouse Listeners");
 		mouseCallbacks.add(new Pair<Long, IMouseCallback>(window.GetID(), callback));
 	}
 	
 	public static void AddKeyCallback(Window window, IKeyCallback callback) {
+		//System.err.println("Adding Window #"+window.GetID()+" to the Key Listeners");
 		keyCallbacks.add(new Pair<Long, IKeyCallback>(window.GetID(), callback));
 	}
 	
 	public static void DispatchResizeEvent(long windowID, int width, int height) {
 		for(Pair<Long, IResizeCallback> pair : resizeCallbacks) {
-			if(pair.first == windowID) {
+			if(pair.first.equals(windowID)) {
+				//System.err.println("Window Match Found!");
 				pair.second.OnResize(width, height);
 			}
 		}
@@ -92,15 +97,18 @@ public class GLFW_API {
 	
 	public static void DispatchCloseEvent(long windowID) {
 		for(Pair<Long, ICloseCallback> pair : closeCallbacks) {
-			if(pair.first == windowID) {
+			if(pair.first.equals(windowID)) {
+				//System.err.println("Window Match Found!");
 				pair.second.OnClose();
 			}
 		}
 	}
 	
 	public static void DispatchMouseMovedEvent(long windowID, double x , double y) {
+		//System.err.println("Dispatching Mouse Moved Event to Window #"+windowID+"... ("+x+","+y+")");
 		for(Pair<Long, IMouseCallback> pair : mouseCallbacks) {
-			if(pair.first == windowID) {
+			//System.err.println("Window Match Found!");
+			if(pair.first.equals(windowID)) {
 				pair.second.OnMouseMoved(x, y);
 			}
 		}
@@ -108,7 +116,8 @@ public class GLFW_API {
 	
 	public static void DispatchMouseButtonEvent(long windowID, int button, int action, int mods) {
 		for(Pair<Long, IMouseCallback> pair : mouseCallbacks) {
-			if(pair.first == windowID) {
+			if(pair.first.equals(windowID)) {
+				//System.err.println("Window Match Found!");
 				switch(action) {
 				case GLFW_PRESS:   pair.second.OnMousePressed(button) ;
 				case GLFW_RELEASE: pair.second.OnMouseReleased(button);
@@ -119,7 +128,8 @@ public class GLFW_API {
 	
 	public static void DispatchKeyEvent(long windowID, int key, int scancode, int action, int mods) {
 		for(Pair<Long, IKeyCallback> pair : keyCallbacks) {
-			if(pair.first == windowID) {
+			if(pair.first.longValue() == windowID) {
+				//System.err.println("Window Match Found!");
 				switch(action) {
 				case GLFW_PRESS:   pair.second.OnKeyPressed ((char) key);
 				case GLFW_REPEAT:  pair.second.OnKeyHeld    ((char) key);
@@ -139,6 +149,10 @@ public class GLFW_API {
 
 	public static void HideWindow(Window window) {
 		glfwHideWindow(window.GetID());
+	}
+
+	public static void SetOpenGLContext(Window window) {
+		glfwMakeContextCurrent(window.GetID());
 	}
 	
 	

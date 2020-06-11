@@ -6,5 +6,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Nutmeg Core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Nutmeg Game Engine"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Nutmeg GLFW"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Nutmeg ImGUI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Nutmeg OpenGL"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
