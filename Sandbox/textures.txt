@@ -1,8 +1,0 @@
-res/textures/coin.png,tex_Coin
-res/textures/spike.png,tex_Spike
-res/textures/player.png,tex_Player
-res/textures/player_idle_00.png,anim_player_Idle_f00
-res/textures/player_idle_01.png,anim_player_Idle_f01
-res/textures/player_idle_02.png,anim_player_Idle_f02
-res/textures/player_idle_03.png,anim_player_Idle_f03
-res/textures/player_idle_04.png,anim_player_Idle_f04
