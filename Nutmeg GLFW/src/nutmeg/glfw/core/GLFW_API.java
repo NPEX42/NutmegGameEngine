@@ -26,7 +26,6 @@ public class GLFW_API {
 	private static ArrayList<Pair<Long, IMouseCallback>>  mouseCallbacks ; 
 	private static ArrayList<Pair<Long, IKeyCallback>>    keyCallbacks   ;
 	private static ArrayList<Pair<Long, ICharCallback>>   charCallbacks  ;
-	private static long[] mouseCursors;
 	
 	public static boolean Init() {
 		resizeCallbacks = new ArrayList<Pair<Long,IResizeCallback>>();

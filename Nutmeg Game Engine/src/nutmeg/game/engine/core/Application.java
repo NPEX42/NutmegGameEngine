@@ -27,8 +27,11 @@ public abstract class Application {
 	
 	public void Run() {
 		for(Layer layer : layers) layer.OnAttach();
+		long tp1, tp2;
+		float ts = 1.0f;
 		while(host.IsActive() && !closeRequested) {
-			for(Layer layer : layers) layer.OnRender();
+			tp1 = System.currentTimeMillis();
+			for(Layer layer : layers) layer.OnRender(ts);
 			for(Layer layer : layers) {
 				UI.NewFrame();
 				layer.OnIMGuiRender();
@@ -37,6 +40,8 @@ public abstract class Application {
 			UI.Update(host);
 			imgui_api.Draw();
 			host.Update();
+			tp2 = System.currentTimeMillis();
+			ts = (tp2 - tp1) / 1000f;
 		}
 		for(Layer layer : layers) layer.OnDestroy();
 		host.Destroy();

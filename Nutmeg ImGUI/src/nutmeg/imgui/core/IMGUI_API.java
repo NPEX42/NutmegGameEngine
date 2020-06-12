@@ -141,7 +141,6 @@ public class IMGUI_API implements ICharCallback, IMouseCallback, IKeyCallback, I
         io.setMouseDown(2, button == GLFW_MOUSE_BUTTON_3 && true);
         io.setMouseDown(3, button == GLFW_MOUSE_BUTTON_4 && true);
         io.setMouseDown(4, button == GLFW_MOUSE_BUTTON_5 && true);
-        System.out.println("IMGUI_API Mouse Pressed");
         if (!io.getWantCaptureMouse() && io.getMouseDown(1)) {
             ImGui.setWindowFocus(null);
         }

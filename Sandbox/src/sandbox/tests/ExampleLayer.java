@@ -11,6 +11,7 @@ import nutmeg.imgui.core.UI;
 
 public class ExampleLayer extends Layer {
 	BoolPtr close = new BoolPtr();
+	float fps;
 	@Override
 	public void OnKeyPressed(char key) {
 		// TODO Auto-generated method stub
@@ -36,7 +37,6 @@ public class ExampleLayer extends Layer {
 	@Override
 	public void OnMousePressed(int button) {
 		// TODO Auto-generated method stub
-		System.err.println("Mouse Held: "+button);
 	}
 
 	@Override
@@ -52,10 +52,12 @@ public class ExampleLayer extends Layer {
 	}
 
 	@Override
-	public void OnRender() {
+	public void OnRender(float ts) {
 		// TODO Auto-generated method stub
 		Renderer.ClearColor(new Color(red.GetValue(), green.GetValue(), blue.GetValue(), 255));
 		Application.closeRequested = close.GetValue();
+		
+		fps = 1 / ts;
 	}
 
 	@Override
@@ -82,9 +84,8 @@ public class ExampleLayer extends Layer {
 	public void OnIMGuiRender() {
 		UI.Begin("Test");
 		UI.Text("Test");
-		UI.SliderInt1("Background Red Value", red, 0, 255);
-		UI.SliderInt1("Background Green Value", green, 0, 255);
-		UI.SliderInt1("Background Blue Value", blue, 0, 255);
+		UI.SliderInt3("Background Color", red, green, blue, 0, 255);
+		UI.Text("FPS: %02.2f", fps);
 		boolean c = UI.Button("Close...");
 		close.SetValue(c);
 		

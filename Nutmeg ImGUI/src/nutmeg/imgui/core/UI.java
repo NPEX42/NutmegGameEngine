@@ -45,12 +45,46 @@ public class UI {
 		ImGui.sliderFloat(text, xAxis.GetRef(), min, max);
 	}
 	
+	public static void SliderFloat2(String text, FloatPtr xAxis, FloatPtr yAxis, float min, float max) {
+		float[] ptrs = {xAxis.GetValue(), yAxis.GetValue()};
+		ImGui.sliderFloat2(text, ptrs, min, max);
+		xAxis.SetValue(ptrs[0]);
+		yAxis.SetValue(ptrs[1]);
+	}
+	
+	public static void SliderFloat3(String text, FloatPtr xAxis, FloatPtr yAxis, FloatPtr zAxis, float min, float max) {
+		float[] ptrs = {xAxis.GetValue(), yAxis.GetValue(), zAxis.GetValue()};
+		ImGui.sliderFloat3(text, ptrs, min, max);
+		xAxis.SetValue(ptrs[0]);
+		yAxis.SetValue(ptrs[1]);
+		zAxis.SetValue(ptrs[2]);
+	}
+	
 	public static void SliderInt1(String text, IntPtr xAxis, int min, int max) {
 		ImGui.sliderInt(text, xAxis.GetRef(), min, max);
 	}
 	
+	public static void SliderInt2(String text, IntPtr xAxis, IntPtr yAxis, int min, int max) {
+		int[] ptrs = {xAxis.GetValue(), yAxis.GetValue()};
+		ImGui.sliderInt2(text, ptrs, min, max);
+		xAxis.SetValue(ptrs[0]);
+		yAxis.SetValue(ptrs[1]);
+	}
+	
+	public static void SliderInt3(String text, IntPtr xAxis, IntPtr yAxis, IntPtr zAxis, int min, int max) {
+		int[] ptrs = {xAxis.GetValue(), yAxis.GetValue(), zAxis.GetValue()};
+		ImGui.sliderInt3(text, ptrs, min, max);
+		xAxis.SetValue(ptrs[0]);
+		yAxis.SetValue(ptrs[1]);
+		zAxis.SetValue(ptrs[2]);
+	}
+	
 	public static boolean Button(String text) {
 		return ImGui.button(text);
+	}
+	
+	public static void Text(String format, Object... args) {
+		ImGui.text(String.format(format, args));
 	}
 	
 	public static void Update(Window windowe) {

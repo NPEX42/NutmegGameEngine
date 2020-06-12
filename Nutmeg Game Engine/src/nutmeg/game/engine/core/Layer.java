@@ -15,7 +15,7 @@ public abstract class Layer implements IKeyCallback, IMouseCallback, ICharCallba
 	}
 	
 	public abstract void OnAttach ();
-	public abstract void OnRender ();
+	public abstract void OnRender (float ts);
 	public abstract void OnDestroy();
 	
 	public abstract void OnIMGuiRender();
