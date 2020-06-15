@@ -3,14 +3,18 @@ package sandbox.tests;
 import java.awt.Color;
 
 import nutmeg.core.datatypes.BoolPtr;
+import nutmeg.core.datatypes.FloatPtr;
 import nutmeg.core.datatypes.IntPtr;
 import nutmeg.game.engine.core.Application;
 import nutmeg.game.engine.core.Layer;
 import nutmeg.game.engine.rendering.Renderer;
+import nutmeg.game.engine.rendering.Renderer2D;
 import nutmeg.imgui.core.UI;
 
 public class ExampleLayer extends Layer {
 	BoolPtr close = new BoolPtr();
+	FloatPtr x =  new  FloatPtr(), y =  new FloatPtr();
+	FloatPtr w =  new  FloatPtr(), h =  new FloatPtr();
 	float fps;
 	@Override
 	public void OnKeyPressed(char key) {
@@ -54,7 +58,10 @@ public class ExampleLayer extends Layer {
 	@Override
 	public void OnRender(float ts) {
 		// TODO Auto-generated method stub
-		Renderer.ClearColor(new Color(red.GetValue(), green.GetValue(), blue.GetValue(), 255));
+		Renderer2D.Background(new Color(red.GetValue(), green.GetValue(), blue.GetValue(), 255));
+		
+		Renderer2D.DrawQuad(0,0, 1,1, Color.white);
+		
 		Application.closeRequested = close.GetValue();
 		
 		fps = 1 / ts;
@@ -85,6 +92,8 @@ public class ExampleLayer extends Layer {
 		UI.Begin("Test");
 		UI.Text("Test");
 		UI.SliderInt3("Background Color", red, green, blue, 0, 255);
+		UI.SliderFloat2("Square Pos", x, y, -1, 1);
+		UI.SliderFloat2("Square Size", w, h, 0, 1);
 		UI.Text("FPS: %02.2f", fps);
 		boolean c = UI.Button("Close...");
 		close.SetValue(c);

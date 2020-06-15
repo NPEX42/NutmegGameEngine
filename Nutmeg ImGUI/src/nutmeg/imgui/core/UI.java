@@ -87,7 +87,7 @@ public class UI {
 		ImGui.text(String.format(format, args));
 	}
 	
-	public static void Update(Window windowe) {
+	public static void Update(Window window) {
 		ImGuiIO io = ImGui.getIO();
 		//io.setDisplaySize(window.getfWidth(), window.getfWidth());
 
